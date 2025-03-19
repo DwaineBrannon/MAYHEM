@@ -1,7 +1,10 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
 export default defineConfig({
+  base: '/MAYHEM/', // Replace 'MAYHEM' with your repository name
+  build: {
+    outDir: 'build', // Change output directory to 'build'
+  },
   plugins: [react()],
-})
+});
