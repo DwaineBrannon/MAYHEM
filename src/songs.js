@@ -1,5 +1,5 @@
 //songs to sort
-export const songs = [
+/*export const songs = [
    "Disease",
    "Abracadabra",
    "Garden of Eden",
@@ -17,4 +17,4 @@ export const songs = [
    "Can't Stop the High (Bonus Track)",
    "Kill for Love (Bonus Track)",
   ];
-  export default songs;
+  export default songs;*/

@@ -1,88 +1,54 @@
-import React, { useState, useEffect, useRef } from 'react';
-import songs from './songs';
+import React, { useState } from "react";
 
-const BiasSorter = () => {
-  const [songList, setSongList] = useState([...songs]);
-  const [comparisons, setComparisons] = useState([]);
-  const [comparisonIndex, setComparisonIndex] = useState(0);
+const BiasSorter = ({ songs }) => {
+  const [sortedList, setSortedList] = useState([]); // The sorted list of songs
+  const [unsortedList, setUnsortedList] = useState([...songs]); // Songs yet to be sorted
+  const [currentComparison, setCurrentComparison] = useState(null); // Current pair being compared
   const [isSorted, setIsSorted] = useState(false);
-  const [sortingPhase, setSortingPhase] = useState(false);
-  const songListRef = useRef([...songs]); // Store the initial songList
 
-  useEffect(() => {
-    const generateComparisons = (list) => {
-      const comps = [];
-      for (let i = 0; i < list.length; i++) {
-        for (let j = i + 1; j < list.length; j++) {
-          comps.push([i, j]);
-        }
-      }
-      return comps;
-    };
-    setComparisons(generateComparisons(songs));
-    console.log("Initial songs array:", songs);
-  }, []);
-
-  const handleChoice = (winnerIndex) => {
-    const [index1, index2] = comparisons[comparisonIndex];
-    const updatedList = [...songList];
-
-    if (winnerIndex === index2) {
-      [updatedList[index1], updatedList[index2]] = [updatedList[index2], updatedList[index1]];
+  // Start the sorting process
+  const startSorting = () => {
+    if (unsortedList.length === 0) {
+      setIsSorted(true);
+      startSorting();
+      return;
     }
 
-    setSongList(updatedList);
-    console.log("Updated songList after choice:", updatedList);
+    // Take the next song from the unsorted list
+    const nextSong = unsortedList[0];
+    setUnsortedList(unsortedList.slice(1)); // Remove it from the unsorted list
 
-    if (comparisonIndex < comparisons.length - 1) {
-      setComparisonIndex(comparisonIndex + 1);
+    // If the sorted list is empty, add the first song directly
+    if (sortedList.length === 0) {
+      setSortedList([nextSong]);
+      startSorting(); // Move to the next song
     } else {
-      setSortingPhase(true);
+      // Compare the new song with the sorted list
+      setCurrentComparison({ song: nextSong, index: 0 });
     }
   };
 
-  useEffect(() => {
-    songListRef.current = songList; // Keep songListRef in sync with songList
-  }, [songList]);
+  // Handle the user's choice
+  const handleChoice = (isBetter) => {
+    const { song, index } = currentComparison;
 
-  useEffect(() => {
-    if (sortingPhase) {
-      const sortedList = [...songListRef.current]; // Use the updated ref for sorting
-      const songIndexMap = {}; // Create a map for song indices
-      songListRef.current.forEach((song, index) => {
-        songIndexMap[song] = index;
-      });
-
-      for (let i = 1; i < sortedList.length; i++) {
-        let currentSong = sortedList[i];
-        let j = i - 1;
-        while (j >= 0 && songIndexMap[sortedList[j]] > songIndexMap[currentSong]) {
-          sortedList[j + 1] = sortedList[j];
-          j--;
-        }
-        sortedList[j + 1] = currentSong;
+    if (isBetter) {
+      // If the new song is better, move to the next comparison
+      if (index + 1 < sortedList.length) {
+        setCurrentComparison({ song, index: index + 1 });
+      } else {
+        // If we've reached the end, add the song to the end of the sorted list
+        setSortedList([...sortedList, song]);
+        startSorting();
       }
-      setSongList(sortedList);
-      setIsSorted(true);
+    } else {
+      // If the new song is worse, insert it at the current position
+      const newSortedList = [...sortedList];
+      newSortedList.splice(index, 0, song);
+      setSortedList(newSortedList);
+      startSorting();
+      return;
     }
-  }, [sortingPhase]); // Only run this effect when sortingPhase changes
-
-  const resetSorter = () => {
-    const generateComparisons = (list) => {
-      const comps = [];
-      for (let i = 0; i < list.length; i++) {
-        for (let j = i + 1; j < list.length; j++) {
-          comps.push([i, j]);
-        }
-      }
-      return comps;
-    };
-  
-    setSongList([...songs]);
-    setComparisons(generateComparisons(songs)); // Regenerate comparisons
-    setComparisonIndex(0);
-    setIsSorted(false);
-    setSortingPhase(false);
   };
 
   if (isSorted) {
@@ -90,70 +56,76 @@ const BiasSorter = () => {
       <div style={styles.container}>
         <h2>Final Ranking</h2>
         <ol>
-          {songList.map((song, index) => (
+          {sortedList.map((song, index) => (
             <li key={index}>{song}</li>
           ))}
         </ol>
-        <button onClick={resetSorter} style={styles.button}>
+        <button onClick={() => window.location.reload()} style={styles.button}>
           Sort Again
         </button>
       </div>
     );
   }
 
-  if (comparisons.length > 0 && comparisonIndex < comparisons.length) {
-    const [index1, index2] = comparisons[comparisonIndex];
+  if (currentComparison) {
+    const { song, index } = currentComparison;
     return (
       <div style={styles.container}>
         <h2 style={styles.header}>Choose your favorite</h2>
         <div style={styles.buttons}>
-          <button onClick={() => handleChoice(index1)} style={styles.button}>
-            {songList[index1]}
+          <button onClick={() => handleChoice(false)} style={styles.button}>
+            {song}
           </button>
-          <button onClick={() => handleChoice(index2)} style={styles.button}>
-            {songList[index2]}
+          <button onClick={() => handleChoice(true)} style={styles.button}>
+            {sortedList[index]}
           </button>
         </div>
       </div>
     );
   }
 
-  return <div>Loading...</div>;
+  return (
+    <div style={styles.container}>
+      <button onClick={startSorting} style={styles.button}>
+        Start Sorting
+      </button>
+    </div>
+  );
 };
 
 const styles = {
   container: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    width: '100vw',
-    padding: '20px',
-    fontFamily: "'Roboto', sans-serif", // Apply font to the container
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    width: "100vw",
+    padding: "20px",
+    fontFamily: "'Roboto', sans-serif",
   },
   header: {
-    fontSize: '2rem',
-    marginBottom: '20px',
-    textAlign: 'center',
-    fontFamily: "'Roboto', sans-serif", // Apply font to the header
+    fontSize: "2rem",
+    marginBottom: "20px",
+    textAlign: "center",
+    fontFamily: "'Roboto', sans-serif",
   },
   buttons: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+    alignItems: "center",
   },
   button: {
-    padding: '10px 20px',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    backgroundColor: 'black', 
-    color: 'white', 
-    border: 'none',
-    borderRadius: '5px',
-    transition: 'background-color 0.3s ease',
-    fontFamily: "'Roboto', sans-serif", // Apply font to buttons
+    padding: "10px 20px",
+    fontSize: "1rem",
+    cursor: "pointer",
+    backgroundColor: "black",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    transition: "background-color 0.3s ease",
+    fontFamily: "'Roboto', sans-serif",
   },
 };
 
