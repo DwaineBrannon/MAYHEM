@@ -205,11 +205,26 @@ const styles = {
     textAlign: "center",
     maxWidth: "600px", // Limit the width of the results container
     width: "100%",
+    backgroundColor: "#a9abaa",
+    borderRadius: "15px",
+    color: "black",
+    padding: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    transition: "background-color 0.3s ease",
   },
   resultsList: {
+    flexDirection: "column",
+    alignItems: "center",
+    cursor: "pointer",
+    marginBottom: "10px",
+    padding: "10px",
     listStyleType: "none",
-    padding: 0,
-    margin: 0,
+    border: "1px solid #ccc",
+    borderRadius: "5px",
+    transition: "background-color 0.3s ease",
+    backgroundColor: "#f9f9f9",
+    color: "black",
+
   },
   resultItem: {
     display: "flex",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const BiasSorter = ({ songs }) => {
   const [sortedList, setSortedList] = useState([]); // The sorted list of songs
@@ -7,26 +7,26 @@ const BiasSorter = ({ songs }) => {
   const [isSorted, setIsSorted] = useState(false);
 
   // Start the sorting process
-  const startSorting = () => {
-    if (unsortedList.length === 0) {
-      setIsSorted(true);
-      startSorting();
+  useEffect(() => {
+    if (unsortedList.length === 0 && !currentComparison) {
+      setIsSorted(true); // Sorting is complete
       return;
     }
 
-    // Take the next song from the unsorted list
-    const nextSong = unsortedList[0];
-    setUnsortedList(unsortedList.slice(1)); // Remove it from the unsorted list
+    if (!currentComparison && unsortedList.length > 0) {
+      // Take the next song from the unsorted list
+      const nextSong = unsortedList[0];
+      setUnsortedList(unsortedList.slice(1)); // Remove it from the unsorted list
 
-    // If the sorted list is empty, add the first song directly
-    if (sortedList.length === 0) {
-      setSortedList([nextSong]);
-      startSorting(); // Move to the next song
-    } else {
-      // Compare the new song with the sorted list
-      setCurrentComparison({ song: nextSong, index: 0 });
+      // If the sorted list is empty, add the first song directly
+      if (sortedList.length === 0) {
+        setSortedList([nextSong]);
+      } else {
+        // Compare the new song with the sorted list
+        setCurrentComparison({ song: nextSong, index: 0 });
+      }
     }
-  };
+  }, [unsortedList, currentComparison, sortedList]);
 
   // Handle the user's choice
   const handleChoice = (isBetter) => {
@@ -39,15 +39,14 @@ const BiasSorter = ({ songs }) => {
       } else {
         // If we've reached the end, add the song to the end of the sorted list
         setSortedList([...sortedList, song]);
-        startSorting();
+        setCurrentComparison(null); // Move to the next song
       }
     } else {
       // If the new song is worse, insert it at the current position
       const newSortedList = [...sortedList];
       newSortedList.splice(index, 0, song);
       setSortedList(newSortedList);
-      startSorting();
-      return;
+      setCurrentComparison(null); // Move to the next song
     }
   };
 
@@ -86,7 +85,7 @@ const BiasSorter = ({ songs }) => {
 
   return (
     <div style={styles.container}>
-      <button onClick={startSorting} style={styles.button}>
+      <button onClick={() => setCurrentComparison(null)} style={styles.button}>
         Start Sorting
       </button>
     </div>
