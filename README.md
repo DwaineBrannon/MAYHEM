@@ -1,17 +1,86 @@
+# Album Bias Sorter
 
-# MAYHEM
-This is a bias sorter for Lady Gaga's Mayhem album. 
-=======
-# React + Vite
+A React application that helps you rank songs from your favorite albums by making simple, head-to-head comparisons to determine your personal favorites.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Features
 
-Currently, two official plugins are available:
+- **Spotify Integration**: Search for albums directly from Spotify's vast library
+- **Simple Interface**: Easy-to-use UI with dark mode support
+- **Head-to-Head Comparisons**: Sort songs by choosing your favorite between two options
+- **Final Rankings**: Get a complete ranked list of all songs from an album
+- **Responsive Design**: Works on both desktop and mobile devices
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technologies Used
 
-## Expanding the ESLint configuration
+- **React**: Frontend UI library
+- **Vite**: Build tool and development server
+- **Spotify API**: Music data source
+- **Axios**: HTTP client for API requests
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Installation
 
+### Prerequisites 
+- **Node.Js**: Ensure you have Node.js (v16 or higher) installed. [nodejs.org](https://nodejs.org/).
+- **Spotify Developer Account**: Create a Spotify Developer account and register an application to get API credentials.
+
+```bash
+# Clone the repository
+git clone https://github.com/dwainebrannon/album-bias-sorter.git
+
+# Navigate to the project directory
+cd album-bias-sorter
+
+# Install dependencies
+npm install
+```
+
+## Setup
+
+1. You'll need to create a Spotify Developer account and register an application to get API credentials
+2. Create a `.env` file in the root directory with the following variables:
+   ```
+   VITE_SPOTIFY_CLIENT_ID=your_spotify_client_id
+   VITE_SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+   ```
+
+## Usage
+
+```bash
+# Start the development server
+npm run dev
+```
+
+Then open your browser and navigate to `http://localhost:5173`
+
+### How to Use
+
+1. **Search for an Album**: Type an album name in the search box
+2. **Select an Album**: Choose from the search results
+3. **Sort the Songs**: Compare songs head-to-head by clicking on your favorite
+4. **View Results**: See the final ranking of all songs
+
+## How It Works
+
+The app uses a sorting algorithm that makes pairwise comparisons to build a sorted list. Each new song is compared against the current sorted list to find its correct position.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Creator
+
+Made by ROZEPOP
+
+- [Bluesky](https://bsky.app/profile/rozepop.bsky.social)
+- [GitHub](https://github.com/dwainebrannon)
+- [Twitter](https://twitter.com/rozepop)
