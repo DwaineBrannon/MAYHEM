@@ -4,10 +4,23 @@ A React application that helps you rank songs from your favorite albums by makin
 
 ## Features
 
-- **Spotify Integration**: Search for albums directly from Spotify's vast library
+- **Spotify Integration**: Search for albums directly from Spotify's library
+<div style="display: flex; gap: 10px;">
+<img src = "./Search.png" width = "300" height = "300" alt ="Search Bar Screenshot. Shows the words 'Album Bias Sorter'. Underneath shows a search bar with a Search button. Then there's a darkmode toggle button. The footer says 'Made by ROZEPOP' and link's to the user's bluesky, github, and twitter">
+<img src = "./Results.png" alt="Screen showing the search results for ARTPOP" width ="75%">
+</div> <br><br><br>
+
 - **Simple Interface**: Easy-to-use UI with dark mode support
 - **Head-to-Head Comparisons**: Sort songs by choosing your favorite between two options
+<div style = "display: flex">
+   <img src="./Sorter.png" width ="50%">
+</div>
+
 - **Final Rankings**: Get a complete ranked list of all songs from an album
+<div>
+<img src="./Ranking.png" width="50%">
+</div>
+
 - **Responsive Design**: Works on both desktop and mobile devices
 
 ## Technologies Used
