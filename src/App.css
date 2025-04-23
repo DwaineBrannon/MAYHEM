@@ -44,3 +44,11 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Target the Ko-fi widget container */
+#kofi-widget-overlay {
+  background-color: transparent !important; /* Remove background */
+  border: none !important; /* Remove border */
+  box-shadow: none !important; /* Remove shadow */
+  z-index: 9999; /* Ensure it appears above other elements */
+}

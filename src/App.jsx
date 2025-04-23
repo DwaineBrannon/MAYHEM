@@ -159,6 +159,7 @@ function App() {
     }
   };
 
+
   return (
     <div
       style={{
@@ -167,7 +168,7 @@ function App() {
       }}
     >
       {/* App Header */}
-      <h1 style={styles.header}>Album Bias Sorter</h1>
+      <h1 style={styles.header}>beatmeter</h1>
 
       {/* Search Bar */}
       <div style={styles.searchContainer}>
@@ -236,7 +237,7 @@ function App() {
       {selectedAlbum && albumTracks.length > 0 && (
         <>
           <h2>Album: {albumName}</h2>
-          <BiasSorter songs={albumTracks} />
+          <BiasSorter songs={albumTracks} album={selectedAlbum} />
         </>
       )}
 
@@ -247,6 +248,7 @@ function App() {
 
       <footer style={styles.footer}>
         Made by ROZEPOP
+        
         <div style={styles.footerLinks}>
           <a href="https://bsky.app/profile/rozepop.bsky.social" target="_blank" rel="noopener noreferrer">
             Bluesky
@@ -259,6 +261,13 @@ function App() {
           <a href="https://twitter.com/rozepop" target="_blank" rel="noopener noreferrer">
             Twitter
           </a>
+            {" "}|{" "}
+          <a
+            href="mailto:rozepopgames@gmail.com?subject=Bug Report for Beatmeter&body=Please describe the bug you encountered:"
+            style={{ color: "#007BFF", textDecoration: "underline", cursor: "pointer" }}
+          >
+            Report a Bug
+          </a>
         </div>
       </footer>
     </div>
@@ -270,7 +279,7 @@ const styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     padding: "20px",
     fontFamily: "'Roboto', sans-serif",
@@ -284,7 +293,7 @@ const styles = {
     fontWeight: "bold",
     marginBottom: "20px",
     textAlign: "center",
-    textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", // Text shadow for header
+    textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", 
   },
   searchContainer: {
     alignItems: "center",
@@ -387,6 +396,8 @@ const styles = {
     cursor: "pointer",
     border: "none",
     borderRadius: "8px",
+    minwidth: "200px",
+    minHeight: "50px",
     backgroundColor: // transparent background for dark mode button
       "rgba(58, 54, 54, 0.48)",
     color: "#fff",
