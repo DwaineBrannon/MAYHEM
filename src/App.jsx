@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import BiasSorter from "./BiasSorter";
 import axios from "axios";
+import 'App.css'; // Import CSS file for styles
+import AdsComponent from "./AdsComponents";
 
 function App() {
   // State variables
@@ -11,6 +13,10 @@ function App() {
   const [selectedAlbum, setSelectedAlbum] = useState(null); // The album selected by the user
   const [isDarkMode, setIsDarkMode] = useState(false); // Dark mode state
 
+  <>
+    <h1>Place To Show Google AdSense</h1>
+    <AdsComponent dataAdSlot="1938859389381783" /> 
+  </>
   // Dynamic styles based on isDarkMode
   const dynamicStyles = {
     searchButton: {
