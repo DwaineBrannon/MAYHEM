@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import BiasSorter from "./BiasSorter";
 import axios from "axios";
-import 'App.css'; // Import CSS file for styles
 import AdsComponent from "./AdsComponents";
 
 function App() {
