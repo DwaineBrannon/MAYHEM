@@ -4,7 +4,6 @@ import axios from "axios";
 import AdsComponent from "./AdsComponents";
 
 function App() {
-  // State variables
   const [albumTracks, setAlbumTracks] = useState([]); // Tracks of the selected album
   const [albumName, setAlbumName] = useState(""); // Name of the selected album
   const [searchQuery, setSearchQuery] = useState(""); // User's search input
@@ -16,11 +15,11 @@ function App() {
     <h1>Place To Show Google AdSense</h1>
     <AdsComponent dataAdSlot="1938859389381783" /> 
   </>
-  // Dynamic styles based on isDarkMode
   const dynamicStyles = {
     searchButton: {
       padding: "10px 15px",
       fontSize: "1rem",
+      fontColor: isDarkMode ? "black" : "white",
       cursor: "pointer",
       border: "2px solid black",
       borderRadius: "8px",
@@ -183,7 +182,7 @@ function App() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)} // Update search query
           onKeyDown={handleKeyDown} // Trigger search on Enter key
-          style={styles.searchInput}
+          style={{ ...styles.searchInput, color: isDarkMode ? "white" : styles.searchInput.color }}
         />
         <button
           onClick={() => {
@@ -306,15 +305,15 @@ const styles = {
     marginBottom: "20px",
   },
   searchInput: {
+    // Figure out how to make the text I input in the search bar white in dark mode
+    
     padding: "10px",
     fontSize: "1rem",
     marginRight: "10px",
-    // tranparent background for search input
     background: "rgba(255, 255, 255, 0)",
     color: "black",
-    // black border in light mode
     border: "1px solid black",
-    borderRadius: "8px", // Rounded corners
+    borderRadius: "8px", 
     outline: "none",
     transition: "border-color 0.3s ease",
   },
