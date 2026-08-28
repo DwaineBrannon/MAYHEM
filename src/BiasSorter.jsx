@@ -31,7 +31,7 @@ const BiasSorter = ({ songs, album }) => {
   // Helper: open Twitter intent
   const shareOnTwitter = () => {
     const tweetText = encodeURIComponent(
-      `I just ranked my favorite songs! Try it here: http://beatmeter.top`
+      `I just ranked my favorite songs! Try it here: https://dwainebrannon.github.io/MAYHEM/`
     );
     window.open(`https://twitter.com/intent/tweet?text=${tweetText}`);
   };
