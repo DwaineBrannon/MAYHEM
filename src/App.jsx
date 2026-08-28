@@ -172,7 +172,7 @@ function App() {
       }}
     >
       {/* App Header */}
-      <h1 style={styles.header}>beatmeter</h1>
+      <h1 style={styles.header}>Album Bias Sorter</h1>
 
       {/* Search Bar */}
       <div style={styles.searchContainer}>
@@ -267,7 +267,8 @@ function App() {
           </a>
             {" "}|{" "}
           <a
-            href="mailto:rozepopgames@gmail.com?subject=Bug Report for Beatmeter&body=Please describe the bug you encountered:"
+            href="mailto:rozepopgames@gmail.com?subject=Bug Report for 
+            Album Bias Sorter&body=Please describe the bug you encountered:"
             style={{ color: "#007BFF", textDecoration: "underline", cursor: "pointer" }}
           >
             Report a Bug
