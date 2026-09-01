@@ -1,6 +1,8 @@
 # Album Bias Sorter
 
 A React application that helps you rank songs from your favorite albums by making simple, head-to-head comparisons to determine your personal favorites.
+# Play with it here
+https://dwainebrannon.github.io/MAYHEM/
 
 ## Features
 
