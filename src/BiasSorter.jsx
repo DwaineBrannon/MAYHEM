@@ -3,9 +3,15 @@ import html2canvas from "html2canvas";
 
 // Accept 'album' prop instead of albumName/artistName
 const BiasSorter = ({ songs, album }) => {
-  const [sortedList, setSortedList] = useState([]); // The sorted list of songs
-  const [unsortedList, setUnsortedList] = useState([...songs]); // Songs yet to be sorted
-  const [currentComparison, setCurrentComparison] = useState(null); // Current pair being compared
+  // Bottom-up, queue-driven merge sort:
+  // - `queue` holds sorted "runs" waiting to be merged (starts as one run per song).
+  // - `current` holds the in-progress merge of the two runs at the front of the queue.
+  // - Each click resolves one comparison; when a run is exhausted the remainder is
+  //   appended without asking the user, the merged run goes to the back of the queue,
+  //   and the next pair is dequeued. When only one run is left, sorting is done.
+  const [queue, setQueue] = useState(() => songs.map((song) => [song]));
+  const [current, setCurrent] = useState(null); // { left, right, leftIdx, rightIdx, merged }
+  const [sortedList, setSortedList] = useState([]);
   const [isSorted, setIsSorted] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
 
@@ -36,48 +42,55 @@ const BiasSorter = ({ songs, album }) => {
     window.open(`https://twitter.com/intent/tweet?text=${tweetText}`);
   };
 
-  // Start the sorting process
+  // Drive the merge sort forward: dequeue the next pair of runs to merge,
+  // or finish once only one run remains.
   useEffect(() => {
-    if (unsortedList.length === 0 && !currentComparison) {
-      setIsSorted(true); // Sorting is complete
+    if (current) return; // a comparison is already in progress
+
+    if (queue.length === 0) {
+      setSortedList([]);
+      setIsSorted(true);
       return;
     }
 
-    if (!currentComparison && unsortedList.length > 0) {
-      // Take the next song from the unsorted list
-      const nextSong = unsortedList[0];
-      setUnsortedList(unsortedList.slice(1)); // Remove it from the unsorted list
-
-      // If the sorted list is empty, add the first song directly
-      if (sortedList.length === 0) {
-        setSortedList([nextSong]);
-      } else {
-        // Compare the new song with the sorted list
-        setCurrentComparison({ song: nextSong, index: 0 });
-      }
+    if (queue.length === 1) {
+      setSortedList(queue[0]);
+      setIsSorted(true);
+      return;
     }
-  }, [unsortedList, currentComparison, sortedList]);
 
-  // Handle the user's choice
-  const handleChoice = (isBetter) => {
-    const { song, index } = currentComparison;
+    const [left, right, ...rest] = queue;
+    setQueue(rest);
+    setCurrent({ left, right, leftIdx: 0, rightIdx: 0, merged: [] });
+  }, [queue, current]);
 
-    if (isBetter) {
-      // If the new song is better, move to the next comparison
-      if (index + 1 < sortedList.length) {
-        setCurrentComparison({ song, index: index + 1 });
-      } else {
-        // If we've reached the end, add the song to the end of the sorted list
-        setSortedList([...sortedList, song]);
-        setCurrentComparison(null); // Move to the next song
-      }
-    } else {
-      // If the new song is worse, insert it at the current position
-      const newSortedList = [...sortedList];
-      newSortedList.splice(index, 0, song);
-      setSortedList(newSortedList);
-      setCurrentComparison(null); // Move to the next song
+  // Handle the user's choice between the current heads of the two runs.
+  // pickLeft = true means the left run's current song was preferred.
+  const handleChoice = (pickLeft) => {
+    if (!current) return;
+    const { left, right, leftIdx, rightIdx, merged } = current;
+
+    let newMerged = pickLeft ? [...merged, left[leftIdx]] : [...merged, right[rightIdx]];
+    const newLeftIdx = pickLeft ? leftIdx + 1 : leftIdx;
+    const newRightIdx = pickLeft ? rightIdx : rightIdx + 1;
+
+    // One run is exhausted: append the remainder of the other run with no
+    // further comparisons, finish this merge, and send the result to the
+    // back of the queue.
+    if (newLeftIdx >= left.length) {
+      newMerged = newMerged.concat(right.slice(newRightIdx));
+      setQueue((q) => [...q, newMerged]);
+      setCurrent(null);
+      return;
     }
+    if (newRightIdx >= right.length) {
+      newMerged = newMerged.concat(left.slice(newLeftIdx));
+      setQueue((q) => [...q, newMerged]);
+      setCurrent(null);
+      return;
+    }
+
+    setCurrent({ left, right, leftIdx: newLeftIdx, rightIdx: newRightIdx, merged: newMerged });
   };
 
   // --- Final Ranking UI ---
@@ -123,7 +136,7 @@ const BiasSorter = ({ songs, album }) => {
         <img src={albumCover} alt="Album cover" style={{ width: 120, height: 120, borderRadius: 8, objectFit: 'cover', marginLeft: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.18)'}} />
       )}
     </div>
-  ) : currentComparison ? (
+  ) : current ? (
     <div style={{
       width: "100%",
       maxWidth: 500,
@@ -136,11 +149,11 @@ const BiasSorter = ({ songs, album }) => {
     }}>
       <h2 style={styles.header}>Choose your favorite</h2>
       <div style={styles.buttons}>
-        <button onClick={() => handleChoice(false)} style={styles.button}>
-          {currentComparison.song}
-        </button>
         <button onClick={() => handleChoice(true)} style={styles.button}>
-          {sortedList[currentComparison.index]}
+          {current.left[current.leftIdx]}
+        </button>
+        <button onClick={() => handleChoice(false)} style={styles.button}>
+          {current.right[current.rightIdx]}
         </button>
       </div>
     </div>
@@ -154,7 +167,7 @@ const BiasSorter = ({ songs, album }) => {
       justifyContent: 'center',
       background: 'rgba(255,255,255,0.01)'
     }}>
-      <button onClick={() => setCurrentComparison(null)} style={styles.button}>
+      <button style={styles.button} disabled>
         Start Sorting
       </button>
     </div>
